@@ -377,7 +377,7 @@ async function handleTicketClose(interaction, client) {
         }
 
         await interaction.followUp({ 
-            content: '✅ Ticket closing in 5 seconds...',
+            content: '✅ Ticket Sẽ xóa trong 5 giây...',
             ephemeral: true 
         });
 
