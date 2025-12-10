@@ -1,20 +1,3 @@
-/*
- ██████╗ ██╗      █████╗  ██████╗███████╗██╗   ██╗████████╗
-██╔════╝ ██║     ██╔══██╗██╔════╝██╔════╝╚██╗ ██╔╝╚══██╔══╝
-██║  ███╗██║     ███████║██║     █████╗   ╚████╔╝    ██║   
-██║   ██║██║     ██╔══██║██║     ██╔══╝    ╚██╔╝     ██║   
-╚██████╔╝███████╗██║  ██║╚██████╗███████╗   ██║      ██║   
- ╚═════╝ ╚══════╝╚═╝  ╚═╝ ╚═════╝╚══════╝   ╚═╝      ╚═╝   
-
--------------------------------------
-📡 Discord : https://discord.gg/xQF9f9yUEM
-🌐 Website : https://glaceyt.com
-🎥 YouTube : https://youtube.com/@GlaceYT
-✅ Verified | 🧩 Tested | ⚙️ Stable
--------------------------------------
-> © 2025 GlaceYT.com | All rights reserved.
-*/
-
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { 
     TextDisplayBuilder,
@@ -447,8 +430,8 @@ module.exports = {
             bannerContainer.addMediaGalleryComponents(
                 new MediaGalleryBuilder().addItems(
                     item => item
-                        .setURL('https://i.ibb.co/XZM1T2Xh/Banner.png')
-                        .setDescription('All in One Bot Banner')
+                        .setURL('https://cdn.discordapp.com/attachments/1406732260639510640/1406735073927106720/Mango.gif?ex=68a38ba1&is=68a23a21&hm=0c697269f7f454b6f9cbedc8f837cc9d7a3a0c8e6806777a5c414a0bc84637fd&')
+                        .setDescription('Mango Banner')
                 )
             );
             displayComponents.push(bannerContainer);
