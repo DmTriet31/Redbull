@@ -1,4 +1,4 @@
-![Animated Background](https://i.imgur.com/ECZKmlO.gif)
+![Animated Background](https://cdn.discordapp.com/attachments/1316896145393586227/1357330377693331566/standard.gif?ex=67efcfec&is=67ee7e6c&hm=fb05e526452ed3144bf0f1f48ef58240ca81f680b48bdf9528babbe2345ac4a2&)
 
 <h1 align="center" style="font-family: Arial, sans-serif; color: #FF6F61; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
   ALL IN ONE BOT 1.4.1.0
@@ -10,29 +10,29 @@
       alt="License: MIT" />
   </a>
 
-  <a href="https://www.paypal.me/@GlaceYT">
+  <a href="https://www.paypal.me/@DmTriet">
     <img src="https://img.shields.io/badge/Donate-PayPal-0079C1?style=flat-square&logo=paypal"
       alt="Donate" />
   </a>
 </p>
 
 <p align="center">
-  <a href="https://www.youtube.com/channel/@GlaceYT">
+  <a href="https://www.youtube.com/channel/@DmTriet">
     <img src="https://img.shields.io/badge/YouTube-Subscribe-red?style=flat-square&logo=youtube"
       alt="YouTube" />
   </a>
 
-  <a href="https://discord.gg/xQF9f9yUEM">
+  <a href="https://discord.gg/eKhkUgXcqU ">
     <img src="https://img.shields.io/badge/Discord-Join-blue?style=flat-square&logo=discord"
       alt="Join Discord" />
   </a>
 
-  <a href="https://www.instagram.com/glaceytt">
+  <a href="https://www.instagram.com/DmTriett">
     <img src="https://img.shields.io/badge/Instagram-Follow-E4405F?style=flat-square&logo=instagram"
       alt="Instagram" />
   </a>
 
-  <a href="https://www.facebook.com/youulewd/">
+  <a href="https://www.facebook.com/DmTriet.06/">
     <img src="https://img.shields.io/badge/Facebook-Follow-1877F2?style=flat-square&logo=facebook"
       alt="Facebook" />
   </a>
