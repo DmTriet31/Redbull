@@ -1,5 +1,5 @@
 const setupBanners = {
-    helpBanner : 'https://i.ibb.co/7dFy30km/ALL-IN-ONE-1-4-BETA.png',
+    helpBanner : 'https://cdn.discordapp.com/attachments/1406732260639510640/1406735073927106720/Mango.gif?ex=68a38ba1&is=68a23a21&hm=0c697269f7f454b6f9cbedc8f837cc9d7a3a0c8e6806777a5c414a0bc84637fd&',
     verificationBanner : 'https://i.ibb.co/pjHDXzXx/static.png',
     ticketBanner : 'https://i.ibb.co/h1DBsRnv/ticket.gif',
     autovcBanner : 'https://i.ibb.co/mk6Tj1r/autovc.gif',
@@ -7,3 +7,4 @@ const setupBanners = {
 };
 
 module.exports = setupBanners;
+
