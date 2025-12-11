@@ -1,19 +1,13 @@
-const LogConfig = require('../models/serverLogs/LogConfig');
+const { logsCollection } = require('../mongodb');
 const WelcomeSettings = require('../models/welcome/WelcomeSettings');
 const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
-const { WelcomeCardGenerator } = require('../UI/WelcomeCardGenerator');
+const { Wcard } = require('wcard-gen');
 const data = require('../UI/banners/welcomecards');
+const createWelcomeDMEmbed = require('../data/welcome/welcomedmembed');
 const InviteSettings = require('../models/inviteTracker/inviteSettings');
 const Invite = require('../models/inviteTracker/invites');
 const VerificationConfig = require('../models/gateVerification/verificationConfig');
 const logHandlersIcons = require('../UI/icons/loghandlers');
-const {
-    ContainerBuilder,
-    SectionBuilder,
-    TextDisplayBuilder,
-    ThumbnailBuilder,
-    MessageFlags
-} = require('discord.js');
 
 /**
  * Helper Functions
@@ -87,7 +81,7 @@ async function handleInviteTracking(client, member) {
                 }
                 
                 const inviter = inviterId ? `<@${inviterId}>` : "Unknown";
-                channel.send(`📩 **Invite Log:** ${member} joined using an invite from ${inviter}. (**Total Invites: ${totalInvites}**)`);
+                channel.send(`📩 **Nhật ký mời:** ${member} đã tham gia bằng lời mời từ ${inviter}. (**Tổng số lời mời: ${totalInvites}**)`);
             }
         }
         
@@ -103,174 +97,29 @@ async function handleMemberJoinLog(client, member) {
         const { user, guild } = member;
         const guildId = guild.id;
         
-        const logConfig = await LogConfig.findOne({ guildId, eventType: 'memberJoin' });
+        const logConfig = await logsCollection.findOne({ guildId, eventType: 'memberJoin' });
         if (!logConfig?.channelId) return;
         
         const logChannel = client.channels.cache.get(logConfig.channelId);
         if (!logChannel) return;
         
-        const logContainer = new ContainerBuilder()
-            .setAccentColor(0x00FF00)
-            .addTextDisplayComponents(
-                new TextDisplayBuilder()
-                    .setContent(`# 🎉 Member Joined`)
+        const logEmbed = new EmbedBuilder()
+            .setTitle('🎉 Member Joined')
+            .setColor('#00FF00')
+            .addFields(
+                { name: 'User', value: `${user.tag} (${user.id})`, inline: true },
+                { name: 'Joined At', value: new Date().toLocaleString(), inline: true },
             )
-            .addSectionComponents(
-                new SectionBuilder()
-                    .addTextDisplayComponents(
-                        new TextDisplayBuilder()
-                            .setContent(`**User**\n${user.tag} (${user.id})\n\n**Joined At**\n${new Date().toLocaleString()}`)
-                    )
-                    .setThumbnailAccessory(
-                        new ThumbnailBuilder()
-                            .setURL(user.displayAvatarURL())
-                            .setDescription(`Avatar of ${user.tag}`)
-                    )
-            )
-            .addTextDisplayComponents(
-                new TextDisplayBuilder()
-                    .setContent(`*Logs System • <t:${Math.floor(Date.now() / 1000)}:R>*`)
-            );
+            .setThumbnail(user.displayAvatarURL())
+            .setFooter({ text: 'Logs System', iconURL: logHandlersIcons.footerIcon })
+            .setTimestamp();
 
-        await logChannel.send({
-            components: [logContainer],
-            flags: MessageFlags.IsComponentsV2
-        });
+        await logChannel.send({ embeds: [logEmbed] });
     } catch (error) {
         console.error('❌ Error in member join log handler:', error);
     }
 }
 
-/**
- * Utility Functions
- */
-function truncateUsername(name, maxLength = 15) {
-    return name.length > maxLength ? name.slice(0, maxLength - 3) + '...' : name;
-}
-
-function getOrdinalSuffix(number) {
-    const j = number % 10;
-    const k = number % 100;
-    if (j === 1 && k !== 11) return 'st';
-    if (j === 2 && k !== 12) return 'nd';
-    if (j === 3 && k !== 13) return 'rd';
-    return 'th';
-}
-
-function getRandomImage(images) {
-    return images[Math.floor(Math.random() * images.length)];
-}
-
-/**
- * Replace placeholders in text with actual values
- */
-function replacePlaceholders(text, data) {
-    if (!text) return '';
-    return text
-        .replace(/\{member\}/g, data.member)
-        .replace(/\{username\}/g, data.username)
-        .replace(/\{userid\}/g, data.userid)
-        .replace(/\{membercount\}/g, data.membercount)
-        .replace(/\{suffix\}/g, data.suffix)
-        .replace(/\{servername\}/g, data.servername)
-        .replace(/\{joindate\}/g, data.joindate)
-        .replace(/\{accountcreated\}/g, data.accountcreated);
-}
-
-/**
- * Get field value based on field type
- */
-function getFieldValue(fieldType, data) {
-    switch (fieldType) {
-        case 'username': return data.username;
-        case 'userid': return data.userid;
-        case 'joindate': return data.joindate;
-        case 'accountcreated': return data.accountcreated;
-        case 'membercount': return `${data.membercount}${data.suffix}`;
-        case 'servername': return data.servername;
-        case 'none': return 'N/A';
-        default: return 'N/A';
-    }
-}
-
-/**
- * Get thumbnail URL based on type
- */
-function getThumbnailURL(type, member) {
-    switch (type) {
-        case 'userimage': return member.user.displayAvatarURL({ format: 'png', dynamic: true, size: 256 });
-        case 'serverimage': return member.guild.iconURL({ format: 'png', dynamic: true, size: 256 });
-        case 'none': return null;
-        default: return member.guild.iconURL({ format: 'png', dynamic: true, size: 256 });
-    }
-}
-
-/**
- * Create Welcome DM Embed
- */
-function createWelcomeDMEmbed(member, dmConfig = {}) {
-    const user = member.user;
-    const username = truncateUsername(user.username, 15);
-    const serverIcon = member.guild.iconURL({ format: 'png', dynamic: true, size: 256 });
-
-    // Data object for placeholder replacement
-    const placeholderData = {
-        username: username,
-        servername: member.guild.name
-    };
-
-    // Default DM configuration
-    const defaultConfig = {
-        title: 'Welcome to the Server!',
-        description: 'Welcome {username}! Thanks for joining {servername}!',
-        color: '#00e5ff',
-        footer: { text: 'Enjoy your stay!', iconURL: '' },
-        thumbnail: { type: 'userimage' },
-        image: { useWcard: false, customURL: '' }
-    };
-
-    // Merge with provided config
-    const config = {
-        title: dmConfig.title || defaultConfig.title,
-        description: dmConfig.description || defaultConfig.description,
-        color: dmConfig.color || defaultConfig.color,
-        footer: { ...defaultConfig.footer, ...dmConfig.footer },
-        thumbnail: dmConfig.thumbnail || defaultConfig.thumbnail,
-        image: { ...defaultConfig.image, ...dmConfig.image }
-    };
-
-    const dmEmbed = new EmbedBuilder()
-        .setTitle(replacePlaceholders(config.title, placeholderData))
-        .setDescription(replacePlaceholders(config.description, placeholderData))
-        .setColor(config.color)
-        .setTimestamp();
-
-    // Set footer
-    const footerConfig = {
-        text: replacePlaceholders(config.footer.text, placeholderData)
-    };
-    if (config.footer.iconURL) {
-        footerConfig.iconURL = config.footer.iconURL || serverIcon;
-    } else {
-        footerConfig.iconURL = serverIcon;
-    }
-    dmEmbed.setFooter(footerConfig);
-
-    // Set thumbnail
-    const thumbnailURL = getThumbnailURL(config.thumbnail.type, member);
-    if (thumbnailURL) dmEmbed.setThumbnail(thumbnailURL);
-
-    // Set custom image if specified and not using Wcard
-    if (!config.image.useWcard && config.image.customURL) {
-        dmEmbed.setImage(config.image.customURL);
-    }
-
-    return dmEmbed;
-}
-
-/**
- * Handle Welcome Channel Messages
- */
 async function handleWelcomeChannel(member, welcomeSettings) {
     try {
         if (!welcomeSettings?.channelStatus || !welcomeSettings.welcomeChannelId) return;
@@ -286,147 +135,66 @@ async function handleWelcomeChannel(member, welcomeSettings) {
         const creationDate = user.createdAt.toDateString();
         const serverIcon = member.guild.iconURL({ format: 'png', dynamic: true, size: 256 });
 
-        // Data object for placeholder replacement
-        const placeholderData = {
-            member: member.toString(),
-            username: username,
-            userid: user.id,
-            membercount: memberCount,
-            suffix: suffix,
-            servername: member.guild.name,
-            joindate: joinDate,
-            accountcreated: creationDate
-        };
+        const randomImage = getRandomImage(data.welcomeImages);
+        const shortTitle = truncateUsername(`Welcome ${memberCount}${suffix}`, 15);
 
-        // Get embed configuration (use defaults if not set)
-        const embedConfig = welcomeSettings.channelEmbed || {};
-        const defaultConfig = {
-            title: 'Welcome!',
-            description: '{member}, You are the **{membercount}{suffix}** member of our server!',
-            color: '#00e5ff',
-            author: { name: '', iconURL: '', url: '' },
-            footer: { text: "We're glad to have you here!", iconURL: '' },
-            thumbnail: { type: 'serverimage' },
-            image: { useWcard: true, customURL: '' },
-            fields: [
-                { name: 'Username', value: 'username', inline: true },
-                { name: 'Join Date', value: 'joindate', inline: true },
-                { name: 'Account Created', value: 'accountcreated', inline: true }
-            ]
-        };
+        const welcomecard = new Wcard()
+            .setName(username) 
+            .setAvatar(user.displayAvatarURL({ format: 'png' }))
+            .setTitle(shortTitle)
+            .setColor("00e5ff")
+            .setBackground(randomImage);
 
-        // Merge with defaults
-        const config = {
-            title: embedConfig.title || defaultConfig.title,
-            description: embedConfig.description || defaultConfig.description,
-            color: embedConfig.color || defaultConfig.color,
-            author: { ...defaultConfig.author, ...embedConfig.author },
-            footer: { ...defaultConfig.footer, ...embedConfig.footer },
-            thumbnail: embedConfig.thumbnail || defaultConfig.thumbnail,
-            image: { ...defaultConfig.image, ...embedConfig.image },
-            fields: embedConfig.fields || defaultConfig.fields
-        };
+        const cardBuffer = await welcomecard.build();
+        const attachment = new AttachmentBuilder(cardBuffer, { name: 'welcome.png' });
 
-        // Create embed
-        const welcomeEmbed = new EmbedBuilder()
-            .setTitle(replacePlaceholders(config.title, placeholderData))
-            .setDescription(replacePlaceholders(config.description, placeholderData))
-            .setColor(config.color)
-            .setTimestamp();
+const serverBannerURL = "https://cdn.discordapp.com/attachments/1406732260639510640/1406735073927106720/Mango.gif?ex=68a38ba1&is=68a23a21&hm=0c697269f7f454b6f9cbedc8f837cc9d7a3a0c8e6806777a5c414a0bc84637fd&";
 
-        // Set author if provided
-        if (config.author.name) {
-            const authorConfig = {
-                name: replacePlaceholders(config.author.name, placeholderData)
-            };
-            if (config.author.iconURL) authorConfig.iconURL = replacePlaceholders(config.author.iconURL, placeholderData) || user.displayAvatarURL();
-            if (config.author.url) authorConfig.url = config.author.url;
-            welcomeEmbed.setAuthor(authorConfig);
-        }
+const welcomeEmbed = new EmbedBuilder()
+    .setTitle("୨ <:RL_Lounge_bow:1376217725994663957> ୧〃 ➜ *Thành viên mới*")
+.setDescription(
+  `*${member}* đã tham gia server! ﹒ ><a:pink_heart:1447004006248349756>`)
+    .setColor(Math.floor(Math.random() * 16777215))
+    .setThumbnail(user.displayAvatarURL({ dynamic: true }))
+    .setImage(serverBannerURL)
+    .addFields(
+        { name: 'Username', value: username, inline: true },
+        { name: 'Join Date', value: joinDate, inline: true },
+        { name: 'Account Created', value: creationDate, inline: true }
+    )
+.setFooter({
+  text: `👤 Thành viên thứ ${memberCount}`,
+    iconURL: serverIcon || "https://cdn.discordapp.com/attachments/1378063153027612884/1406730386905759906/913854ac485948c075b583f73908bbca.jpg?ex=68a38744&is=68a235c4&hm=bc91a610d16608df083e6372fba716676ba5badf8a460d0de9776eac773f9842&"
+})
+    .setTimestamp();
 
-        // Set footer
-        const footerConfig = {
-            text: replacePlaceholders(config.footer.text, placeholderData)
-        };
-        if (config.footer.iconURL) {
-            footerConfig.iconURL = config.footer.iconURL || serverIcon;
-        } else {
-            footerConfig.iconURL = serverIcon;
-        }
-        welcomeEmbed.setFooter(footerConfig);
+await welcomeChannel.send({
+    embeds: [welcomeEmbed]
+});
 
-        // Set thumbnail
-        const thumbnailURL = getThumbnailURL(config.thumbnail.type, member);
-        if (thumbnailURL) welcomeEmbed.setThumbnail(thumbnailURL);
-
-        // Add fields - COMPLETION OF THE CUT-OFF CODE
-        config.fields.forEach(field => {
-            if (field.value !== 'none' && field.name) {
-                const fieldValue = getFieldValue(field.value, placeholderData);
-                welcomeEmbed.addFields({
-                    name: field.name,
-                    value: fieldValue,
-                    inline: field.inline !== undefined ? field.inline : true
-                });
-            }
-        });
-
-        // Handle image/attachment
-        let attachment = null;
-        let messageOptions = {
-            content: `Hey ${member}!`,
-            embeds: [welcomeEmbed]
-        };
-
-        if (config.image.useWcard) {
-            try {
-                 const cardGen = new WelcomeCardGenerator();
-        
-                // Generate the welcome card (isLeave: false)
-                const cardBuffer = await cardGen.generate({
-                    username,
-                    serverName: member.guild.name,
-                    memberCount,
-                    avatarURL: user.displayAvatarURL({ format: 'png', size: 256 }),
-                    isLeave: false
-                });
-        
-                attachment = new AttachmentBuilder(cardBuffer, { name: 'welcome.png' });
-        
-                welcomeEmbed.setImage('attachment://welcome.png');
-                messageOptions.files = [attachment];
-            } catch (customCardError) {
-                console.warn('❌ Error generating custom welcome card, falling back to custom image:', customCardError);
-                if (config.image.customURL) {
-                    welcomeEmbed.setImage(config.image.customURL);
-                }
-            }
-        } else if (config.image.customURL) {
-            welcomeEmbed.setImage(config.image.customURL);
-        }
-        
-
-        // Send the welcome message
-        await welcomeChannel.send(messageOptions);
 
     } catch (error) {
         console.error('❌ Error in welcome channel handler:', error);
     }
 }
 
-/**
- * Handle Welcome DM Messages
- */
+
+function truncateUsername(name, maxLength = 15) {
+    return name.length > maxLength ? name.slice(0, maxLength - 3) + '...' : name;
+}
+
+
 async function handleWelcomeDM(member, welcomeSettings) {
     try {
         if (!welcomeSettings?.dmStatus) return;
         
-        const dmEmbed = createWelcomeDMEmbed(member, welcomeSettings.dmEmbed);
+        const dmEmbed = createWelcomeDMEmbed(member);
         await member.user.send({ embeds: [dmEmbed] });
     } catch (error) {
         console.warn(`❌ Failed to send DM to ${member.user.tag}:`, error.message);
     }
 }
+
 /**
  * Main Member Join Handler
  */
@@ -467,3 +235,4 @@ module.exports = async function memberJoinHandler(client) {
         }
     });
 };
+
