@@ -1,115 +1,100 @@
 lavalink:
-    plugins:
-        - dependency: "dev.lavalink.youtube:youtube-plugin:1.16.0"
-          repository: "https://maven.lavalink.dev/releases"
-        - dependency: "com.github.topi314.lavasrc:lavasrc-plugin:4.8.1"
-          repository: "https://maven.lavalink.dev/releases"
-        - dependency: "com.github.topi314.lavasearch:lavasearch-plugin:1.0.0"
-          repository: "https://maven.lavalink.dev/releases"
     server:
-        bufferDurationMs: 400
-        readTimeout: 60000           # Read timeout in milliseconds (60 seconds)
-        requestTimeout: 60000 
-        filters:
-            channelMix: true
-            distortion: true
-            equalizer: true
-            karaoke: true
-            lowPass: true
-            rotation: true
-            timescale: true
-            tremolo: true
-            vibrato: true
-            volume: true
-        frameBufferDurationMs: 5000
+        bufferDurationMs: 400        
+        frameBufferDurationMs: 1000  
         gcWarnings: true
-        opusEncodingQuality: 5
+        opusEncodingQuality: 5       
         password: glace
         playerUpdateInterval: 5
-        resamplingQuality: HIGH
+        resamplingQuality: MEDIUM    
         soundcloudSearchEnabled: true
+        
+        # Only enable filters you actually USE
+        filters:
+            equalizer: true        
+            volume: true             
+            timescale: true     
+            channelMix: true       
+            distortion: true        
+            karaoke: true           
+            lowPass: true        
+            rotation: true       
+            tremolo: true       
+            vibrato: true          
+        
         sources:
             bandcamp: true
             http: true
             local: false
-            nico: true
+            nico: false              
             soundcloud: true
-            twitch: true
-            vimeo: true
-            youtube: false
+            twitch: false           
+            vimeo: false           
+            youtube: false       
+        
         trackStuckThresholdMs: 10000
         useSeekGhosting: true
         youtubePlaylistLoadLimit: 6
         youtubeSearchEnabled: true
-plugins:
-    youtube:
-        enabled: true
-        allowSearch: true
-        allowDirectVideoIds: true
-        allowDirectPlaylistIds: true
-        clients:
-            - MUSIC
-            - WEB
-            - TV
-            - TVHTML5EMBEDDED
-            - ANDROID_VR
-        remoteCipher:
-            url: "https://cipher.kikkia.dev/"
-            userAgent: "lavalink-server"
-        oauth:
-            enabled: true
-            skipInitialization: true
-            refreshToken: "1//05eVJMrhyUcq2CgYIARAAGAUSNwF-L9Ir3gEa6DSFX0YleFRB0OjyNolItThNkeWsBx6MN0D0_Pws4kacKMQsxTSHZZatAeaxx5k"
-    lavasrc:
-        providers:
-            - "ytsearch:\"%ISRC%\""
-            - "ytsearch:%QUERY%"
-        sources:
-            spotify: true
-            applemusic: false
-            deezer: false
-            yandexmusic: false
-            flowerytts: false
-            youtube: true
-        spotify:
-            clientId: "b9a4b5775f1847a2b072573589b530f7"
-            clientSecret: "682ef411fa5942d28bfe6c409e90f202"
-            countryCode: "US"
-            playlistLoadLimit: 10
-            albumLoadLimit: 10
-            resolveArtistsInSearch: true
-            localFiles: false
-    lavasearch:
-        sources:
-            - spotify
-            - youtube
+
+lavasrc:
+    providers:
+        - spsearch:%QUERY%
+        - ytmsearch:"%ISRC%"
+        - ytmsearch:%QUERY%
+    
+    sources:
+        spotify: true
+        applemusic: false
+        deezer: false
+        flowerytts: false
+        yandexmusic: false
+    
+    spotify:
+        clientId: f71a3da30e254962965ca2a89d6f74b9
+        clientSecret: 199a619d22dd4e55a4a2c1a7a3d70e63
+        countryCode: US
+        playlistLoadLimit: 6
+        albumLoadLimit: 6
+
+
 logging:
+    level:
+        root: INFO
+        lavalink: INFO
+    
     file:
         path: ./logs/
-    level:
-        lavalink: INFO
-        root: INFO
-        dev.lavalink.youtube.http.YoutubeOauth2Handler: INFO
+    
     logback:
         rollingPolicy:
-            maxFileSize: 1GB
-            maxHistory: 30
+            maxFileSize: 100MB      
+            maxHistory: 7         
+    
     request:
-        enabled: true
-        includeClientInfo: true
+        enabled: false               
+        includeClientInfo: false
         includeHeaders: false
-        includePayload: true
-        includeQueryString: true
-        maxPayloadLength: 10000
+        includePayload: false
+        includeQueryString: false
+
 metrics:
     prometheus:
         enabled: false
-        endpoint: /metrics
+
+plugins:
+    youtube:
+        enabled: true
+        pot:
+            token: MnhT2vfKOIPrGlPmfGCghVao7Op9y51JxlDz5GbOOSKgXodzmFYTQ_Lg-lyGH552S5ymgQPlMQsX2g9NFyGq32sQ9PA6DLqLkcU5gSWNpdFNkxLUnYmeAzQqBYiYJ8asxVcn98xzcx3QEByRU225fAlDyyky7WKwUOU=
+            visitorData: CgtWSG51Z0ViNkNjbyiRtY3HBjIKCgJJThIEGgAgag==
+
 sentry:
     dsn: ""
     environment: ""
+
 server:
     address: 0.0.0.0
+    port: 8003
     http2:
         enabled: false
-    port: 8003
