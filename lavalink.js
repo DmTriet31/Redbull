@@ -1,4 +1,5 @@
 module.exports = {
+enabled: true, 
   nodes: [
     {
       host: "194.58.66.44",
