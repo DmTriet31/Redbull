@@ -29,7 +29,9 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const loadEventHandlers = async (client) => {
     const log = (msg) => console.log(`[SYSTEM] ${msg}`);
     console.log(`\n===== Bot System Initialization (${new Date().toLocaleString()}) =====\n`);
-    
+
+    require('./events/guildMemberAdd')(client); // ✅ THÊM DÒNG NÀY
+    log('GuildMemberAdd Handler loaded');
     require('./events/ticketHandler')(client);
     log('Ticket Handler loaded');
     require('./events/voiceChannelHandler')(client);
