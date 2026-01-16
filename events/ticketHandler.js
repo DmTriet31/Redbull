@@ -147,19 +147,19 @@ async function sendTicketEmbed(channel) {
             '- Please be patient while waiting for a response from our support team.'
         )
 
-        .setFooter({ text: 'We are here to Help!', iconURL: ticketIcons.modIcon })
+        .setFooter({ text: 'Chúng tôi ở đây để giúp đỡ bạn!', iconURL: ticketIcons.modIcon })
         .setColor('#00FF00')
         .setImage(setupBanners.ticketBanner)
         .setTimestamp();
 
     const menu = new StringSelectMenuBuilder()
         .setCustomId('select_ticket_type')
-        .setPlaceholder('Choose ticket type')
+        .setPlaceholder('Chọn ticket type')
         .addOptions([
-            { label: '🆘 Support', value: 'support' },
-            { label: '📂 Suggestion', value: 'suggestion' },
-            { label: '💜 Feedback', value: 'feedback' },
-            { label: '⚠️ Report', value: 'report' }
+            { label: '🆘 Hỗ Trợ', value: 'support' },
+            { label: '📂 Góp Ý', value: 'suggestion' },
+            { label: '💜 Đánh Giá', value: 'feedback' },
+            { label: '⚠️ Tố Cáo', value: 'report' }
         ]);
 
     const row = new ActionRowBuilder().addComponents(menu);
