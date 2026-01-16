@@ -139,12 +139,12 @@ async function setupTicketChannels(client) {
 
 async function sendTicketEmbed(channel) {
     const embed = new EmbedBuilder()
-        .setAuthor({ name: "Welcome to Ticket Support", iconURL: ticketIcons.mainIcon })
+        .setAuthor({ name: "Welcome to Mango Support", iconURL: ticketIcons.mainIcon })
         .setDescription(
-            '- Please click below menu to create a new ticket.\n\n' +
-            '**Ticket Guidelines:**\n' +
-            '- Empty tickets are not permitted.\n' +
-            '- Please be patient while waiting for a response from our support team.'
+            '- Chọn Đúng Chủ Đề ở Dưới Để Tạo Ticket.\n\n' +
+            '*Ticket Guidelines:**\n' +
+            '- Không Được Tạo Ticket Trống.\n' +
+            '- Vui lòng để lại vấn đề cần hỗ trợ, chúng tôi sẽ phản hồi sớm nhất có thể.'
         )
 
         .setFooter({ text: 'Chúng tôi ở đây để giúp đỡ bạn!', iconURL: ticketIcons.modIcon })
@@ -287,7 +287,7 @@ async function handleTicketCreation(interaction, client) {
         }
 
         return interaction.followUp({ 
-            content: `✅ Your ticket has been created: ${ticketChannel}`,
+            content: `✅ Phiếu Hỗ Trợ Của Bạn Đã Được Tạo: ${ticketChannel}`,
             ephemeral: true 
         });
     } catch (err) {
@@ -324,7 +324,7 @@ async function handleTicketClose(interaction, client) {
 
     if (!isTicketOwner && !isAdmin) {
         return interaction.followUp({ 
-            content: '❌ You do not have permission to close this ticket.',
+            content: '❌ Bạn Không Có Quyền Đóng Ticket.',
             ephemeral: true 
         });
     }
@@ -338,10 +338,10 @@ async function handleTicketClose(interaction, client) {
         if (ticketOwner) {
             const dmEmbed = new EmbedBuilder()
                 .setColor(0x0099ff)
-                .setAuthor({ name: "Ticket Closed", iconURL: ticketIcons.correctIcon })
-                .setDescription(`Your ticket in **${guild.name}** has been closed.`)
+                .setAuthor({ name: "Đóng Ticket", iconURL: ticketIcons.correctIcon })
+                .setDescription(`Phiếu Hỗ Trợ Của Bạn **${guild.name}** Đã Đóng.`)
                 .setTimestamp()
-                .setFooter({ text: 'Thanks for using our support system!', iconURL: ticketIcons.modIcon });
+                .setFooter({ text: 'Cảm ơn bạn đã sử dụng hệ thống hỗ trợ của chúng tôi!', iconURL: ticketIcons.modIcon });
 
             try {
                 await ticketOwner.send({
@@ -441,7 +441,7 @@ async function handleStaffPing(interaction, client) {
                 new EmbedBuilder()
                     .setColor('Red')
                     .setTitle('🕒 Cooldown Active')
-                    .setDescription(`You can ping staff again <t:${Math.floor(nextPing.getTime() / 1000)}:R>.`)
+                    .setDescription(`Bạn có thể liên lạc lại với nhân viên hỗ trợ. <t:${Math.floor(nextPing.getTime() / 1000)}:R>.`)
             ],
             ephemeral: true
         });
@@ -450,7 +450,7 @@ async function handleStaffPing(interaction, client) {
     const staffPingEmbed = new EmbedBuilder()
     .setColor('Orange')
     .setAuthor({ name: "Staff Assistance Requested", iconURL: ticketIcons.pingIcon })
-    .setDescription(`${member} has requested support in this ticket.`)
+    .setDescription(`${member} đã yêu cầu hỗ trợ.`)
     .setFooter({ text: 'Notification sent via the ticket system', iconURL: member.displayAvatarURL() })
     .setTimestamp();
 
@@ -468,8 +468,8 @@ async function handleStaffPing(interaction, client) {
 
     const confirmationEmbed = new EmbedBuilder()
         .setColor('Green')
-        .setTitle('✅ Staff Notified')
-        .setDescription('A support team member has been notified and will assist you shortly.');
+        .setTitle('✅ Admin đã được thông báo')
+        .setDescription('Một thành viên nhóm hỗ trợ đã được thông báo và sẽ hỗ trợ bạn trong thời gian ngắn.');
 
     await interaction.followUp({ embeds: [confirmationEmbed], ephemeral: true });
 }
