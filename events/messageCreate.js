@@ -41,7 +41,53 @@ module.exports = {
         const guildId = message.guild.id;
         const channelId = message.channel.id;
         const content = message.content.toLowerCase().trim();
+        // ======= AUTO-REACT 3 EMOJI CHO 3 KÊNH =======
+const AUTO_REACT_CHANNELS = [
+    '1469838485849510041', // Locket
+    '1470075748697116716', // CapCut
+    '1469838140738109450'  // Phát thanh
+];
 
+const EMOJIS = {
+    link: ['🔗', '🌐', '📎'],
+    image: ['🖼️', '📸', '🎨'],
+    video: ['🎬', '📹', '▶️']
+};
+
+if (AUTO_REACT_CHANNELS.includes(channelId)) {
+    try {
+        const urlPattern = /(https?:\/\/[^\s]+)/g;
+
+        // React link
+        if (urlPattern.test(content)) {
+            for (const emoji of EMOJIS.link) {
+                await message.react(emoji).catch(() => {});
+            }
+        }
+
+        // React hình ảnh
+        const hasImage = message.attachments.some(att =>
+            att.contentType && att.contentType.startsWith('image/')
+        );
+        if (hasImage) {
+            for (const emoji of EMOJIS.image) {
+                await message.react(emoji).catch(() => {});
+            }
+        }
+
+        // React video
+        const hasVideo = message.attachments.some(att =>
+            att.contentType && att.contentType.startsWith('video/')
+        );
+        if (hasVideo) {
+            for (const emoji of EMOJIS.video) {
+                await message.react(emoji).catch(() => {});
+            }
+        }
+    } catch (err) {
+        console.error('Auto react error:', err);
+    }
+}
 
         try {
             const countingData = await CountingConfig.findOne({
