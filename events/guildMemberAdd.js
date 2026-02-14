@@ -12,7 +12,7 @@ module.exports = (client) => {
     console.log(`[✅] Thành viên mới: ${member.user.tag}`);
 
     const channel = member.guild.channels.cache.find(
-      ch => ch.name === 'welcome' || ch.id === '1444648369262821407'
+      ch => ch.name === 'welcome' || ch.id === '1472210246054187172'
     );
     if (!channel) {
       console.warn('[⚠️] Không tìm thấy kênh welcome.');
@@ -21,7 +21,7 @@ module.exports = (client) => {
 
     const embed = new EmbedBuilder()
       .setColor(0xff4757)
-      .setTitle('<a:pink_bow:1444701287818989764> Welcome To Mango <a:pink_bow:1444701287818989764>')
+      .setTitle('<a:MG_Hi:1447004755351306242> Welcome To Mango <a:MG_Heart_d1:1470060994968555550>')
       .setDescription(
         `Chúc bạn có những khoảng khắc vui vẻ và gắn kết với mọi người khi tham gia server, đừng ngần ngại trò chuyện và kết bạn với các thành viên khác nhé.\n\n` +
         `Hãy thoải mái tham gia các cuộc trò chuyện, đóng góp ý tưởng và cùng nhau xây dựng 1 cộng đồng vui vẻ và đoàn kết. ` +
@@ -37,7 +37,7 @@ module.exports = (client) => {
       new ButtonBuilder()
         .setLabel('.gg/Mango')
         .setStyle(ButtonStyle.Link)
-        .setURL('https://cdn.discordapp.com/attachments/1360360505717297270/1437183308130684979/tguj68.gif?ex=6969fc82&is=6968ab02&hm=d1b7152a684cc691b415813abd34e5fa8bdb253731b8354b565da287a8e8fc75')
+        .setURL('https://discord.com/channels/1360197467261636750/1444648352905166849')
         .setEmoji('<a:RL_love:1444697294761889852>'),
 
       new ButtonBuilder()
