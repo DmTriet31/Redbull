@@ -2,10 +2,11 @@ module.exports = {
 enabled: true, 
   nodes: [
     {
-      host: "194.58.66.44",
-      port: 3660,
-      password: "AYANO",
+      host: "pnode1.danbot.host",
+      port: 1186‎,
+      password: "Kaun.Yuvraj",
       secure: false
     }
   ]
 };
+
