@@ -148,12 +148,12 @@ async function handleWelcomeChannel(member, welcomeSettings) {
         const cardBuffer = await welcomecard.build();
         const attachment = new AttachmentBuilder(cardBuffer, { name: 'welcome.png' });
 
-const serverBannerURL = "https://cdn.discordapp.com/attachments/1406732260639510640/1406735073927106720/Mango.gif?ex=68a38ba1&is=68a23a21&hm=0c697269f7f454b6f9cbedc8f837cc9d7a3a0c8e6806777a5c414a0bc84637fd&";
+const serverBannerURL = "https://cdn.discordapp.com/attachments/1470080464994828389/1473415174621892608/C0B19170-552A-473A-938B-26B220807783.gif?ex=69962050&is=6994ced0&hm=f90361c9bfcd7e0a42f7d5a38e454f3c26df0baae013562dd1ed3b29d0b4b10f&";
 
 const welcomeEmbed = new EmbedBuilder()
-    .setTitle("୨ <:RL_Lounge_bow:1376217725994663957> ୧〃 ➜ *Thành viên mới*")
+    .setTitle("<a:MG_Hi:1447004755351306242> ➜ *Thành viên mới*")
 .setDescription(
-  `*${member}* đã tham gia server! ﹒ ><a:pink_heart:1447004006248349756>`)
+  `*${member}* đã tham gia server! ﹒ ><a:MG_heart:1447004006248349756><a:MG_zap:1447004479013781665>`)
     .setColor(Math.floor(Math.random() * 16777215))
     .setThumbnail(user.displayAvatarURL({ dynamic: true }))
     .setImage(serverBannerURL)
@@ -235,4 +235,5 @@ module.exports = async function memberJoinHandler(client) {
         }
     });
 };
+
 
