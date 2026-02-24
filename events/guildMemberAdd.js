@@ -19,23 +19,27 @@ module.exports = (client) => {
       return;
     }
 
-    const embed = new EmbedBuilder()
-      .setColor(0xff4757)
-      .setTitle('<a:MG_Hi:1447004755351306242> Welcome To Mango <a:MG_Heart_d1:1470060994968555550>')
-      .setDescription(
-        `Chúc bạn có những khoảng khắc vui vẻ và gắn kết với mọi người khi tham gia server, đừng ngần ngại trò chuyện và kết bạn với các thành viên khác nhé.\n\n` +
-        `Hãy thoải mái tham gia các cuộc trò chuyện, đóng góp ý tưởng và cùng nhau xây dựng 1 cộng đồng vui vẻ và đoàn kết. ` +
-        `Hi vọng bạn có những khoảng khắc tuyệt vời tại server!`
-      )
-      .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
-      .setFooter({
-        text: `Mango • ${new Date().toLocaleTimeString()}`,
-        iconURL: 'https://cdn.discordapp.com/attachments/1378063153027612884/1406730386905759906/913854ac485948c075b583f73908bbca.jpg?ex=68a38744&is=68a235c4&hm=bc91a610d16608df083e6372fba716676ba5badf8a460d0de9776eac773f9842&'
-      });
+    const serverName = member.guild.name;
+    const serverIcon = member.guild.iconURL({ dynamic: true });
+    const joinTime = `<t:${Math.floor(member.joinedTimestamp / 1000)}:F>`;
+    
+      const embed = new EmbedBuilder()
+  .setColor(0xff4757)
+  .setTitle(`<a:MG_Hi:1447004755351306242> Welcome "${serverName}" <a:MG_Heart_d1:1470060994968555550>`)
+  .setDescription(
+    `Chúc bạn có những khoảng khắc vui vẻ và gắn kết với mọi người khi tham gia server, đừng ngần ngại trò chuyện và kết bạn với các thành viên khác nhé.\n\n` +
+    `Hãy thoải mái tham gia các cuộc trò chuyện, đóng góp ý tưởng và cùng nhau xây dựng 1 cộng đồng vui vẻ và đoàn kết. ` +
+    `Hi vọng bạn có những khoảng khắc tuyệt vời tại server!`
+  )
+  .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+  .setFooter({
+    text: `${serverName} • Tham gia: ${joinTime}`,
+    iconURL: serverIcon
+  });
 
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
-        .setLabel('.gg/Mango')
+        .setLabel(`.gg/${serverName}`)
         .setStyle(ButtonStyle.Link)
         .setURL('https://discord.com/channels/1360197467261636750/1444648352905166849')
         .setEmoji('<a:RL_love:1444697294761889852>'),
